@@ -1,7 +1,7 @@
 const UnauthorizedError = require("../errors/unauthorized");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
-const usersService = require("../path/to/users.service"); // Remplacez le chemin par le chemin correct vers votre service utilisateur
+const usersService = require("api/users/users.service.js"); 
 
 module.exports = async (req, res, next) => {
   try {
@@ -12,14 +12,13 @@ module.exports = async (req, res, next) => {
     
     const decoded = jwt.verify(token, config.secretJwtToken);
     
-    // Récupérez toutes les informations de l'utilisateur en fonction de l'ID
+  
     const user = await usersService.get(decoded.userId);
     
     if (!user) {
       throw "User not found";
     }
 
-    // Attachez toutes les informations de l'utilisateur à l'objet req.user
     req.user = user;
 
     next();
