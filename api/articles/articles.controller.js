@@ -49,6 +49,29 @@ class ArticlesController {
       res.status(204).send();
     } catch (error) {
       next(error);
+
+class UsersController {
+  // ...
+
+  async getUserArticles(req, res, next) {
+    try {
+      const userId = req.params.userId;
+
+      // Utilisez le service pour récupérer les articles de l'utilisateur par son ID
+      const articles = await articlesService.getArticlesByUserId(userId);
+
+      if (!articles) {
+        throw new NotFoundError("No articles found for this user.");
+      }
+
+      res.json(articles);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // ...
+}
     }
   }
 }
