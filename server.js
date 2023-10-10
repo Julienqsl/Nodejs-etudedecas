@@ -8,6 +8,26 @@ const usersController = require("./api/users/users.controller");
 const authMiddleware = require("./middlewares/auth");
 require("./api/articles/articles.schema"); // temporaire
 const app = express();
+const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
+const articlesRouter = require("./api/articles/articles.router");
+
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.use(express.json());
+app.use("/api/articles", articlesRouter);
+
+io.on("connection", (socket) => {
+  console.log("Nouveau client connecté");
+  // Vous pouvez ajouter des gestionnaires d'événements ici si nécessaire
+});
+
+const PORT = 3000;
+server.listen(PORT, () => {
+  console.log(`Serveur en écoute sur le port ${PORT}`);
+});
 
 const server = http.createServer(app);
 const io = new Server(server);
