@@ -12,11 +12,19 @@ class ArticlesController {
     }
   }
 
+class ArticlesController {
+  // ...
+
   async updateArticle(req, res, next) {
     try {
+      // Vérifiez si l'utilisateur est un admin
+      if (req.user.role !== 'admin') {
+        throw new UnauthorizedError("Unauthorized: Only admins can update articles.");
+      }
+
       const articleId = req.params.id;
       const { title, content } = req.body;
-      const updatedArticle = await articlesService.updateArticle(articleId, { title, content });
+      const updatedArticle = await Article.findByIdAndUpdate(articleId, { title, content }, { new: true });
       if (!updatedArticle) {
         throw new NotFoundError("Article not found");
       }
@@ -28,8 +36,13 @@ class ArticlesController {
 
   async deleteArticle(req, res, next) {
     try {
+      // Vérifiez si l'utilisateur est un admin
+      if (req.user.role !== 'admin') {
+        throw new UnauthorizedError("Unauthorized: Only admins can delete articles.");
+      }
+
       const articleId = req.params.id;
-      const deletedArticle = await articlesService.deleteArticle(articleId);
+      const deletedArticle = await Article.findByIdAndDelete(articleId);
       if (!deletedArticle) {
         throw new NotFoundError("Article not found");
       }
