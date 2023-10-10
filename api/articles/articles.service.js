@@ -38,6 +38,20 @@ class ArticlesService {
       throw error;
     }
   }
+  async getArticlesByUserId(userId) {
+    try {
+      // Utilisez la méthode populate() de Mongoose pour récupérer les articles de l'utilisateur sans afficher le mot de passe
+      const articles = await Article.find({ user: userId }).populate({
+        path: "user",
+        select: "-password", // N'incluez pas le mot de passe de l'utilisateur
+      });
+
+      return articles;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }
 
 module.exports = new ArticlesService();
