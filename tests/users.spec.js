@@ -2,12 +2,13 @@ const request = require("supertest");
 const { app } = require("../server");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
+const { MongoMemoryServer } = require("mongodb-memory-server");
 const mongoose = require("mongoose");
 const mockingoose = require("mockingoose");
 const User = require("../api/users/users.model");
 const usersService = require("../api/users/users.service");
 
-describe("tester API users", () => {
+describe("Tester l'API des utilisateurs", () => {
   let token;
   const USER_ID = "fake";
   const MOCK_DATA = [
@@ -26,7 +27,6 @@ describe("tester API users", () => {
 
   beforeEach(() => {
     token = jwt.sign({ userId: USER_ID }, config.secretJwtToken);
-    // mongoose.Query.prototype.find = jest.fn().mockResolvedValue(MOCK_DATA);
     mockingoose(User).toReturn(MOCK_DATA, "find");
     mockingoose(User).toReturn(MOCK_DATA_CREATED, "save");
   });
@@ -48,14 +48,25 @@ describe("tester API users", () => {
     expect(res.body.name).toBe(MOCK_DATA_CREATED.name);
   });
 
-  test("Est-ce userService.getAll", async () => {
-    const spy = jest
-      .spyOn(usersService, "getAll")
-      .mockImplementation(() => "test");
-    await request(app).get("/api/users").set("x-access-token", token);
-    expect(spy).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveReturnedWith("test");
+  test("[Users] Update User", async () => {
+    const updatedName = "Updated Name";
+    const res = await request(app)
+      .put(`/api/users/${USER_ID}`)
+      .send({ name: updatedName })
+      .set("x-access-token", token);
+    expect(res.status).toBe(200);
+    expect(res.body.name).toBe(updatedName);
+  });
+
+  test("[Users] Delete User", async () => {
+    const res = await request(app)
+      .delete(`/api/users/${USER_ID}`)
+      .set("x-access-token", token);
+    expect(res.status).toBe(204);
+
+    // Vérifiez si l'utilisateur est supprimé de la base de données
+    const deletedUser = await User.findById(USER_ID);
+    expect(deletedUser).toBeNull();
   });
 
   afterEach(() => {
