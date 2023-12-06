@@ -1,4 +1,4 @@
-const Article = require("api/articles");
+const Article = require("./article.model");
 
 class ArticlesService {
   async createArticle(data) {

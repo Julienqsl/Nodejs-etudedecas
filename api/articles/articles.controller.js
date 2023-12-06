@@ -1,5 +1,5 @@
-const articlesService = require("api/articles/articles.service.js");
-const NotFoundError = require(".errors/not-found.js");
+const articlesService = require("./articles.service.js");
+const NotFoundError = require("../../errors/not-found.js");
 
 class ArticlesController {
   async createArticle(req, res, next) {
@@ -11,8 +11,6 @@ class ArticlesController {
       next(error);
     }
   }
-
-class ArticlesController {
   // ...
 
   async updateArticle(req, res, next) {
@@ -49,29 +47,6 @@ class ArticlesController {
       res.status(204).send();
     } catch (error) {
       next(error);
-
-class UsersController {
-  // ...
-
-  async getUserArticles(req, res, next) {
-    try {
-      const userId = req.params.userId;
-
-      // Utilisez le service pour récupérer les articles de l'utilisateur par son ID
-      const articles = await articlesService.getArticlesByUserId(userId);
-
-      if (!articles) {
-        throw new NotFoundError("No articles found for this user.");
-      }
-
-      res.json(articles);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  // ...
-}
     }
   }
 }

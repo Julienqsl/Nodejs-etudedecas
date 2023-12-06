@@ -6,15 +6,12 @@ const NotFoundError = require("./errors/not-found");
 const userRouter = require("./api/users/users.router");
 const usersController = require("./api/users/users.controller");
 const authMiddleware = require("./middlewares/auth");
-require("./api/articles/articles.schema"); // temporaire
 const app = express();
-const express = require("express");
-const http = require("http");
 const socketIo = require("socket.io");
 const articlesRouter = require("./api/articles/articles.router");
 
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = new Server(server);
 
 app.use(express.json());
 app.use("/api/articles", articlesRouter);
@@ -29,8 +26,6 @@ server.listen(PORT, () => {
   console.log(`Serveur en écoute sur le port ${PORT}`);
 });
 
-const server = http.createServer(app);
-const io = new Server(server);
 
 io.on("connection", (socket) => {
   console.log("a user connected");

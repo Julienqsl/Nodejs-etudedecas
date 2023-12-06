@@ -14,6 +14,4 @@ const articleSchema = Schema({
   },
 });
 
-let Article;
-
-module.exports = Article = model("Article", articleSchema);
+module.exports = model("Article", articleSchema);
